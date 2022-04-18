@@ -7,13 +7,16 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.*;
+import java.util.List;
 
 public class ClientHandler implements Runnable {
+    public List<AuthMethod> authMethods;
     private Socket clientSocket;
     private DataOutputStream output;
     private DataInputStream input;
-    public ClientHandler(Socket clientSocket){
+    public ClientHandler(Socket clientSocket, List<AuthMethod> authMethods){
         this.clientSocket = clientSocket;
+        this.authMethods = authMethods;
     }
     @Override
     public void run() {
@@ -31,7 +34,7 @@ public class ClientHandler implements Runnable {
             byte[] methods = input.readNBytes(methodsNumber);
             boolean contains = false;
             AuthMethod method = null;
-            for(AuthMethod m : Main.authMethods){
+            for(AuthMethod m : authMethods){
                 if(contains(methods, m.getCode())){
                     contains = true;
                     method = m;
